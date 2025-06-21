@@ -10,7 +10,7 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(express.static('public'));
 
-// Configuración de express-session con Redis
+// Configuración de la session
 app.use(session({
     secret: process.env.SESSION_SECRET || 'tu_clave',
     resave: false,
@@ -19,6 +19,8 @@ app.use(session({
         secure: process.env.NODE_ENV === 'production',
         maxAge: 1000 * 60 * 60 * 24 
     }
+}, (err) => {
+    console.error('Error en la configuración de la sesión:', err);
 }));
 
 //RUTAS ESTATICAS
