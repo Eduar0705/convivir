@@ -25,8 +25,6 @@ app.use(express.static('public'));
 
 //RUTAS DE ADMIN
 app.use(require('./routes/login'));
-app.use(require('./routes/regUsuario'));
-app.use(require('./routes/regUsuario_admin'));
 app.use(require('./routes/codLogin'));
 app.use(require('./routes/admin'));
 app.use(require('./routes/avisos'));
@@ -35,18 +33,19 @@ app.use(require('./routes/pagos'));
 app.use(require('./routes/estadisticas'));
 app.use(require('./routes/proveedores'));
 
-//ELIMINAR USUARIO
+//AGREGACIONES
+app.use(require('./routes/regUsuario'));
+app.use(require('./routes/regUsuario_admin'));
+app.use(require('./routes/aggPagos'));
+app.use(require('./routes/aggProve'));
+
+//ELIMINACIONES
 app.use(require('./routes/delete_user'));
-
-//ELIMINAR PAGO
 app.use(require('./routes/delete_pago'));
-
-//ELIMINAR PROVEEDOR
 app.use(require('./routes/dele_prove'));
 
 //RUTAS USUARIOS
 app.use(require('./routes/users'));
-app.use(require('./routes/aggPagos'));
 app.use(require('./routes/avisosUsuario'));
 
 //PUERTO DEL SERVIDOR

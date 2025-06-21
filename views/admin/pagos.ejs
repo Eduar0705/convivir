@@ -243,27 +243,22 @@
                 alert('Por favor ingrese un precio del dólar válido');
             }
         });
-        // Opcional: Permitir calcular al presionar Enter en el input
+        
         document.getElementById('precio-dolar').addEventListener('keypress', function(e) {
             if (e.key === 'Enter') {
                 document.getElementById('aceptar-precio').click();
             }
         });
-        // Obtener el select de torre
+
         const torreSelect = document.getElementById('edi');
-
-        // Obtener la tabla de pagos
         const pagosTable = document.querySelector('.payments-table');
-
-        // Función para buscar por torre
         function buscarPorTorre() {
-        // Obtener el valor seleccionado en el select de torre
         const torreSeleccionada = torreSelect.value;
 
         // Filtrar la tabla de pagos según la torre seleccionada
         const filas = pagosTable.querySelectorAll('tr');
         filas.forEach((fila) => {
-            const torre = fila.querySelector('th:nth-child(8)').textContent; // 8 es la posición de la columna de torre
+            const torre = fila.querySelector('th:nth-child(8)').textContent;
             if (torre !== torreSeleccionada && torreSeleccionada !== '') {
             fila.style.display = 'none';
             } else {
@@ -272,7 +267,6 @@
         });
         }
 
-        // Agregar evento de cambio al select de torre
         torreSelect.addEventListener('change', buscarPorTorre);
     </script>
 </body>
