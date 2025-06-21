@@ -1,2 +1,2 @@
-const linkLogin = "convivirsistema.onrender.com";
+const linkLogin = "";
 module.exports = { linkLogin };
