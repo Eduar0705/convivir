@@ -12,15 +12,12 @@ app.use(express.static('public'));
 
 // Configuración de la session
 app.use(session({
-    secret: process.env.SESSION_SECRET || 'tu_clave',
+    secret: 'mi-clave-secreta',
     resave: false,
     saveUninitialized: false,
     cookie: {
-        secure: process.env.NODE_ENV === 'production',
-        maxAge: 1000 * 60 * 60 * 24 
+        maxAge: 1000 * 60 * 60 * 24 // 1 día
     }
-}, (err) => {
-    console.error('Error en la configuración de la sesión:', err);
 }));
 
 //RUTAS ESTATICAS
