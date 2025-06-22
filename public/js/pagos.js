@@ -3,7 +3,7 @@ const logoUrl = "../img/LOGO.png";
 // Function to get current date in DD/MM/YYYY format
 function getFormattedDate() {
     const today = new Date();
-    return `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
+    return ${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()};
 }
 
 // Function to generate clean table HTML
@@ -77,7 +77,7 @@ function setupExcelExport() {
         const blob = new Blob([html], {type: 'application/vnd.ms-excel'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = `Registro_de_pagos_${getFormattedDate().replace(/\//g, '-')}.xls`;
+        a.download = Registro_de_pagos_${getFormattedDate().replace(/\//g, '-')}.xls;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -187,9 +187,21 @@ function setupFilters() {
 
             // Date range filter
             if (desde || hasta) {
+                // Validar que si ambas fechas existen, desde no sea mayor o igual a hasta
+                if (desde && hasta) {
+                    const desdeDate = new Date(desde);
+                    const hastaDate = new Date(hasta);
+                    if (desdeDate >= hastaDate) {
+                        throw new Error("La fecha de inicio no puede ser mayor o igual a la fecha de final");
+                        // O puedes manejarlo de otra forma según tus necesidades, como:
+                        // return false;
+                        // o mostrar un mensaje al usuario
+                    }
+                }
+
                 const rowDateParts = fecha.split('/');
                 if (rowDateParts.length === 3) {
-                    const rowDate = new Date(`${rowDateParts[2]}-${rowDateParts[1]}-${rowDateParts[0]}`);
+                    const rowDate = new Date(${rowDateParts[2]}-${rowDateParts[1]}-${rowDateParts[0]});
                     
                     if (desde) {
                         const desdeDate = new Date(desde);
