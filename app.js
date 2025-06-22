@@ -23,6 +23,9 @@ app.use(session({
 //RUTAS ESTATICAS
 app.use(express.static('public'));
 
+//RECUPERACION DE CLAVE
+app.use(require('./routes/recuperar'));
+
 //RUTAS DE ADMIN
 app.use(require('./routes/login'));
 app.use(require('./routes/codLogin'));
