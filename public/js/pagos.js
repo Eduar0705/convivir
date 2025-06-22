@@ -192,16 +192,20 @@ function setupFilters() {
                     const desdeDate = new Date(desde);
                     const hastaDate = new Date(hasta);
                     if (desdeDate >= hastaDate) {
-                        throw new Error("La fecha de inicio no puede ser mayor o igual a la fecha de final");
-                        // O puedes manejarlo de otra forma según tus necesidades, como:
-                        // return false;
-                        // o mostrar un mensaje al usuario
+                        // Usando SweetAlert para una alerta moderna
+                        Swal.fire({
+                            icon: 'error',
+                            title: 'Error en fechas',
+                            text: 'La fecha de inicio no puede ser mayor o igual a la fecha de final',
+                            confirmButtonText: 'Entendido'
+                        });
+                        return; // Detener la ejecución
                     }
                 }
 
                 const rowDateParts = fecha.split('/');
                 if (rowDateParts.length === 3) {
-                    const rowDate = new Date(${rowDateParts[2]}-${rowDateParts[1]}-${rowDateParts[0]});
+                    const rowDate = new Date(`${rowDateParts[2]}-${rowDateParts[1]}-${rowDateParts[0]}`);
                     
                     if (desde) {
                         const desdeDate = new Date(desde);
