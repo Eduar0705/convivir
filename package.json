@@ -27,6 +27,7 @@
     "bcryptjs": "^3.0.2",
     "body-parser": "^2.2.0",
     "cheerio": "^1.1.0",
+    "connect-flash": "^0.1.1",
     "connect-redis": "^9.0.0",
     "cors": "^2.8.5",
     "ejs": "^3.1.10",
@@ -39,6 +40,7 @@
     "nodemailer": "^7.0.3",
     "nodemon": "^3.1.10",
     "redis": "^5.5.6",
+    "sweetalert2": "^11.22.0",
     "twilio": "^5.7.1"
   }
 }

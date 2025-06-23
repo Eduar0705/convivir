@@ -134,7 +134,7 @@ document.addEventListener('DOMContentLoaded', function() {
             });
 
             if (!isValid) {
-                event.preventDefault(); // ✅ solo se bloquea si hay errores
+                event.preventDefault();
                 Swal.fire({
                     icon: 'error',
                     title: 'Error de validación',
@@ -142,9 +142,15 @@ document.addEventListener('DOMContentLoaded', function() {
                     confirmButtonColor: '#d32f2f'
                 });
                 return;
+            }else{
+                Swal.fire({
+                    icon: 'success',
+                    title: 'Proveedor agregado correctamente',
+                    text: 'El proveedor ha sido agregado correctamente',
+                    timer: 3000,
+                    timerProgressBar: true
+                });
             }
-
-            // ✅ Si no hay errores, el formulario se envía normalmente
         });
     }
 

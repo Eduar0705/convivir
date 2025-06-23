@@ -3,6 +3,7 @@ const router = express.Router();
 const conexion = require('../config/conexion'); 
 
 router.post('/aggProve', (req, res) => { 
+    let mensaje;
     const { 
         nombre_apellido, cedula, email, rif, 
         telefono, monto_pago, area_trabajo, 
@@ -26,11 +27,13 @@ router.post('/aggProve', (req, res) => {
 
     conexion.query(insert, valores, (err, resul) => { 
         if (err) { 
-            console.log('Error al registrar proveedor', err); 
+            console.log('Error al registrar proveedor', err);
             return res.status(500).send('Error al registrar proveedor'); 
         } 
-        console.log('Proveedor agregado con éxito'); 
-        res.redirect('/admin/proveedores'); 
+        console.log('Proveedor agregado con éxito');
+        setTimeout(() => {
+            res.redirect('/admin/proveedores');
+        }, 3500);
     }); 
 }); 
 

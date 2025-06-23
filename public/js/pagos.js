@@ -3,7 +3,7 @@ const logoUrl = "../img/LOGO.png";
 // Function to get current date in DD/MM/YYYY format
 function getFormattedDate() {
     const today = new Date();
-    return ${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()};
+    return `${today.getDate().toString().padStart(2, '0')}/${(today.getMonth() + 1).toString().padStart(2, '0')}/${today.getFullYear()}`;
 }
 
 // Function to generate clean table HTML
@@ -18,7 +18,7 @@ function getCleanTableHTML() {
 
     // Remove "Actions" column
     clone.querySelectorAll('thead tr, tbody tr').forEach(tr => {
-        if (tr.cells.length > 0) tr.deleteCell(-1);
+        if (tr.cells && tr.cells.length > 0) tr.deleteCell(-1);
     });
 
     // Apply inline styles for table
@@ -77,7 +77,7 @@ function setupExcelExport() {
         const blob = new Blob([html], {type: 'application/vnd.ms-excel'});
         const a = document.createElement('a');
         a.href = URL.createObjectURL(blob);
-        a.download = Registro_de_pagos_${getFormattedDate().replace(/\//g, '-')}.xls;
+        a.download = `Registro_de_pagos_${getFormattedDate().replace(/\//g, '-')}.xls`;
         document.body.appendChild(a);
         a.click();
         document.body.removeChild(a);
@@ -158,6 +158,8 @@ function setupFilters() {
             return;
         }
 
+        let hasVisibleRows = false;
+
         Array.from(table.rows).forEach(row => {
             // Skip "No records" row or rows with insufficient cells
             if (row.cells.length < 6) {
@@ -165,11 +167,11 @@ function setupFilters() {
                 return;
             }
 
-            const referencia = row.cells[0].textContent.toLowerCase();
-            const monto = row.cells[1].textContent.toLowerCase();
-            const cedula = row.cells[2].textContent.toLowerCase();
-            const fecha = row.cells[3].textContent;
-            const metodoPago = row.cells[5].textContent.toLowerCase();
+            const referencia = row.cells[0]?.textContent?.toLowerCase() || '';
+            const monto = row.cells[1]?.textContent?.toLowerCase() || '';
+            const cedula = row.cells[2]?.textContent?.toLowerCase() || '';
+            const fecha = row.cells[3]?.textContent || '';
+            const metodoPago = row.cells[5]?.textContent?.toLowerCase() || '';
 
             let matchesSearch = !search;
             let matchesMetodo = !metodo;
@@ -177,7 +179,9 @@ function setupFilters() {
 
             // Search filter (reference, ID, amount)
             if (search) {
-                matchesSearch = referencia.includes(search) || cedula.includes(search) || monto.includes(search);
+                matchesSearch = referencia.includes(search) || 
+                              cedula.includes(search) || 
+                              monto.includes(search);
             }
 
             // Payment method filter
@@ -187,19 +191,21 @@ function setupFilters() {
 
             // Date range filter
             if (desde || hasta) {
-                // Validar que si ambas fechas existen, desde no sea mayor o igual a hasta
                 if (desde && hasta) {
                     const desdeDate = new Date(desde);
                     const hastaDate = new Date(hasta);
                     if (desdeDate >= hastaDate) {
-                        // Usando SweetAlert para una alerta moderna
-                        Swal.fire({
-                            icon: 'error',
-                            title: 'Error en fechas',
-                            text: 'La fecha de inicio no puede ser mayor o igual a la fecha de final',
-                            confirmButtonText: 'Entendido'
-                        });
-                        return; // Detener la ejecución
+                        if (typeof Swal !== 'undefined') {
+                            Swal.fire({
+                                icon: 'error',
+                                title: 'Error en fechas',
+                                text: 'La fecha de inicio no puede ser mayor o igual a la fecha de final',
+                                confirmButtonText: 'Entendido'
+                            });
+                        } else {
+                            alert('La fecha de inicio no puede ser mayor o igual a la fecha de final');
+                        }
+                        return;
                     }
                 }
 
@@ -220,19 +226,23 @@ function setupFilters() {
             }
 
             // Show row only if all active filters match
-            row.style.display = (matchesSearch && matchesMetodo && matchesFecha) ? '' : 'none';
+            const shouldShow = matchesSearch && matchesMetodo && matchesFecha;
+            row.style.display = shouldShow ? '' : 'none';
+            
+            if (shouldShow) hasVisibleRows = true;
         });
 
         // Check if all rows are hidden
-        const visibleRows = Array.from(table.rows).some(row => row.style.display !== 'none');
-        if (!visibleRows) {
-            const noResultsRow = document.createElement('tr');
-            noResultsRow.innerHTML = '<td colspan="6" style="text-align:center;"><h1>No se encontraron resultados</h1></td>';
-            noResultsRow.id = 'no-results-row';
-            table.appendChild(noResultsRow);
-        } else {
-            const noResultsRow = document.getElementById('no-results-row');
-            if (noResultsRow) noResultsRow.remove();
+        const noResultsRow = document.getElementById('no-results-row');
+        if (!hasVisibleRows) {
+            if (!noResultsRow) {
+                const newRow = document.createElement('tr');
+                newRow.id = 'no-results-row';
+                newRow.innerHTML = '<td colspan="6" style="text-align:center;"><h1>No se encontraron resultados</h1></td>';
+                table.appendChild(newRow);
+            }
+        } else if (noResultsRow) {
+            noResultsRow.remove();
         }
     }
 
@@ -249,20 +259,26 @@ function setupFilters() {
 // Delete payment functionality
 function setupDeletePayment() {
     window.eliminarPago = function(id_pago) {
-        Swal.fire({
-            title: '¿Estás seguro?',
-            text: "¡No podrás revertir esto!",
-            icon: 'warning',
-            showCancelButton: true,
-            confirmButtonColor: '#3085d6',
-            cancelButtonColor: '#d33',
-            confirmButtonText: 'Sí, eliminar',
-            cancelButtonText: 'Cancelar'
-        }).then((result) => {
-            if (result.isConfirmed) {
+        if (typeof Swal !== 'undefined') {
+            Swal.fire({
+                title: '¿Estás seguro?',
+                text: "¡No podrás revertir esto!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Sí, eliminar',
+                cancelButtonText: 'Cancelar'
+            }).then((result) => {
+                if (result.isConfirmed) {
+                    window.location.href = '/eliminarPago/' + id_pago;
+                }
+            });
+        } else {
+            if (confirm('¿Estás seguro que deseas eliminar este pago?')) {
                 window.location.href = '/eliminarPago/' + id_pago;
             }
-        });
+        }
     }
 }
 

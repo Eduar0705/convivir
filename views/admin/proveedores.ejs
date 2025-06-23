@@ -175,7 +175,18 @@
                 <h2>Registrar Nuevo Proveedor</h2>
                 <span class="close-btn">×</span>
             </div>
-            <form id="proveedorForm" method="post" action="/aggProve" autocomplete="off">
+            <form id="proveedorForm" method="post" action="/aggProve">
+                <% if (typeof mensaje != 'undefined') { %>
+                    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+                    <script>
+                        Swal.fire({
+                            icon: 'info',
+                            title: 'Información',
+                            text: '<%= mensaje %>',
+                            confirmButtonText: 'Aceptar'
+                        });
+                    </script>
+                <% } %>
                 <div class="form-group">
                     <label for="nombre_apellido">Nombre y Apellido:</label>
                     <input type="text" id="nombre_apellido" name="nombre_apellido">
