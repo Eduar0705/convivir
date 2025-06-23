@@ -85,8 +85,7 @@
                     </div>
                 </div>
             </header>
-            <main class="content">
-                <main class="stats-container">
+            <main class="stats-container">
                     <!-- KPIs Principales -->
                     <section class="kpi-grid">
                         <%
@@ -100,47 +99,77 @@
                         <div class="kpi-card payments">
                         <div class="kpi-header">
                                 <span class="kpi-title">Pagos Recibidos</span>
-                                <div class="kpi-icon">
-                                    <i class="fas fa-money-bill-wave"></i>
-                                </div>
                             </div>
                             <div class="kpi-value"><%= PagosT %> Bs</div>
+                        </div>
+                    </section>
+                    <section class="kpi-grid">
+                        
+                        <div class="kpi-card payments">
+                        <div class="kpi-header">
+                                <span class="kpi-title">Pagos Recibid</span>
+                            </div>
+                            <form class="form-pagos">
+                                <label><i class="fas fa-users"></i> Residentes</label>
+                                <select name="user" id="user">
+                                    <% usuarios.forEach(function(user) { %>
+                                        <% if (user.id_cargo === 2) { %>
+                                            <option value="<%= user.nombre_apellido %> -- <%= user.edificio %> -- <%= user.apartamento %>"><%= user.nombre_apellido %> -- <%= user.edificio %> -- <%= user.apartamento %></option>
+                                        <% } %>
+                                    <% }); %>
+                                </select>
+                                <label><i class="fas fa-money-bill-wave"></i> Pagos Resividos</label>
+                                <select name="pago" id="pago">
+                                    <% results.forEach(function(pago) { %>
+                                        <option value="<%= pago.nombre_p %> -- <%= pago.monto_pago %>Bs"> <%= pago.nombre_p %> -- <%= pago.monto_pago %>Bs</option>
+                                    <% }); %>
+                                </select>
+                                <label><i class="fas fa-calendar-alt"></i> Mes cancelado</label>
+                                <select name="mes" id="mes">
+                                    <option value="">Seleccione un mes</option>
+                                    <option value="Enero">Enero</option>
+                                    <option value="Febrero">Febrero</option>
+                                    <option value="Marzo">Marzo</option>
+                                    <option value="Abril">Abril</option>
+                                    <option value="Mayo">Mayo</option>
+                                    <option value="Junio">Junio</option>
+                                    <option value="Julio">Julio</option>
+                                    <option value="Agosto">Agosto</option>
+                                    <option value="Septiembre">Septiembre</option>
+                                    <option value="Octubre">Octubre</option>
+                                    <option value="Noviembre">Noviembre</option>
+                                    <option value="Diciembre">Diciembre</option>
+                                </select>
+                                <label><i class="fas fa-calendar-alt"></i> Rango de fechas</label>
+                                <input type="date" name="fecha_inicio" id="fecha_inicio">
+                                <input type="date" name="fecha_final" id="fecha_final">
+                                <label><i class="fas fa-check"></i> Confirmar Pago</label>
+                                <input type="checkbox" name="confirmar" id="confirmar">
+                                <button type="submit">Agrgar pago del cliente</button>
+                            </form>
                         </div>
                     </section>
 
                     <!-- Estadísticas Adicionales -->
                     <section class="additional-stats">
                         <div class="stat-widget">
-                            <h3 style="margin-bottom: 15px; color: #333;">Pagos Retrasados</h3>
-                            <table class="data-table">
-                                <thead>
-                                    <tr>
-                                        <th></th>
-                                        <th>Residente</th>
-                                        <th>Apartamento</th>
-                                        <th>Monto</th>
-                                        <th>Días de Retraso</th>
-                                    </tr>
-                                </thead>
-                                <tbody>
-                                    <tr>
-                                        <td>Pedro Salazar</td>
-                                        <td>302</td>
-                                        <td>$350</td>
-                                        <td>5</td>
-                                    </tr>
-                                    <tr>
-                                        <td>María López</td>
-                                        <td>210</td>
-                                        <td>$420</td>
-                                        <td>2</td>
-                                    </tr>
-                                </tbody>
-                            </table>
+                            <h3 style="margin-bottom: 15px; color: #333;">Pagos Confirmados</h3>
+                            <form action="" method="post">
+                                <table>
+                                    <thead>
+                                        <tr>
+                                            <th>Residente</th>
+                                            <th>Monto</th>
+                                            <th>Pago confirmado</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody></tbody>
+                                </table>
+                            </form>
                         </div>
                     </section>
-                </main>
             </main>
+            
             <footer class="footer">
                 <p>&copy; 2023 Panel de Administración. Todos los derechos reservados.</p>
             </footer>

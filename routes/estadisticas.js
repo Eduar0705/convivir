@@ -4,9 +4,27 @@ const conexion = require('../config/conexion');
 const link = require('../config/link');
 
 router.get('/admin/estadisticas', function(req, res) {
-    conexion.query('SELECT * FROM pagos', (err, resultados) => {
-        if (err) throw err;
-        res.render('admin/estadisticas', {link, results: resultados});
+    // Primero obtener los pagos
+    conexion.query('SELECT * FROM pagos', (err, pagos) => {
+        if (err) {
+            console.error(err);
+            return res.status(500).send('Error al cargar los pagos');
+        }
+        
+        // Luego obtener los usuarios
+        conexion.query('SELECT * FROM inf_usuarios', (err, usuarios) => {
+            if (err) {
+                console.error(err);
+                return res.status(500).send('Error al cargar los usuarios');
+            }
+            
+            // Renderizar la vista con ambos conjuntos de datos
+            res.render('admin/estadisticas', {
+                link: link,
+                results: pagos,
+                usuarios: usuarios 
+            });
+        });
     });
 });
 
