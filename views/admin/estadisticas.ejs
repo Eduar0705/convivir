@@ -107,7 +107,7 @@
                         
                         <div class="kpi-card payments">
                         <div class="kpi-header">
-                                <span class="kpi-title">Pagos Recibid</span>
+                                <span class="kpi-title">Confirmacion de Pagos</span>
                             </div>
                             <form class="form-pagos" action="/aggEstadisticas" method="post">
                                 <label><i class="fas fa-users"></i> Residentes</label>
@@ -119,12 +119,13 @@
                                         <% } %>
                                     <% }); %>
                                 </select>
-                                <label><i class="fas fa-money-bill-wave"></i> Pagos Resividos</label>
+                                <label><i class="fas fa-money-bill-wave"></i> Pagos Recividos</label>
                                 <select name="pago" id="pago">
                                     <option value="">Seleccione un pago</option>
                                     <% results.forEach(function(pago) { %>
                                         <option value="<%= pago.nombre_p %> -- <%= pago.monto_pago %>Bs"> <%= pago.nombre_p %> -- <%= pago.monto_pago %>Bs -- <%= pago.fecha_pago ? new Date(pago.fecha_pago).toLocaleDateString('es-ES') : '' %></option>
                                     <% }); %>
+                                    <option value="">No encontrado</option>
                                 </select>
                                 <label><i class="fas fa-calendar-alt"></i> Mes cancelado</label>
                                 <select name="mes" id="mes">
@@ -283,6 +284,45 @@
                 });
             });
         });
+    </script>
+    <script>
+    document.addEventListener('DOMContentLoaded', function () {
+        const selectUser = document.getElementById('user');
+        const selectPago = document.getElementById('pago');
+
+        selectUser.addEventListener('change', function () {
+            const nombreSeleccionado = this.value.split(' -- ')[0].trim(); // solo el nombre
+
+            let encontrado = false;
+
+            // Limpiar selección actual
+            selectPago.value = '';
+
+            for (let option of selectPago.options) {
+                if (option.value.includes(nombreSeleccionado)) {
+                    selectPago.value = option.value;
+                    encontrado = true;
+                    break;
+                }
+            }
+
+            if (!encontrado) {
+                // Eliminar opción "No encontrado" previa si existe
+                [...selectPago.options].forEach(opt => {
+                    if (opt.value === 'no-encontrado') {
+                        opt.remove();
+                    }
+                });
+
+                // Agregar opción "No encontrado"
+                const noEncontrado = document.createElement('option');
+                noEncontrado.value = 'no-encontrado';
+                noEncontrado.textContent = 'No encontrado';
+                noEncontrado.selected = true;
+                selectPago.appendChild(noEncontrado);
+            }
+        });
+    });
     </script>
 </body>
 </html>

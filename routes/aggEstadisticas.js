@@ -35,9 +35,9 @@ router.post('/aggEstadisticas', (req, res) => {
             });
         }
         console.log('Registro exitoso de control de pago');
-        timeout(() => {
+        setTimeout(() => {
             res.redirect('/admin/estadisticas');
-        }, 3000);
+        }, 2500);
     });
 });
 
