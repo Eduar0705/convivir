@@ -76,7 +76,7 @@
                     <button class="menu-toggle" aria-label="Mostrar menú">
                         <i class="fas fa-bars"></i>
                     </button>
-                    <h1>Estadísticas <i class="fa fa-chart-bar "></i></h1>
+                    <h1>Estadísticas de pagos <i class="fa fa-chart-bar "></i></h1>
                 </div>
                 <div class="navbar-right">
                     <div class="user-profile">
@@ -109,9 +109,10 @@
                         <div class="kpi-header">
                                 <span class="kpi-title">Pagos Recibid</span>
                             </div>
-                            <form class="form-pagos">
+                            <form class="form-pagos" action="/aggEstadisticas" method="post">
                                 <label><i class="fas fa-users"></i> Residentes</label>
                                 <select name="user" id="user">
+                                    <option value="">Seleccione un residente</option>
                                     <% usuarios.forEach(function(user) { %>
                                         <% if (user.id_cargo === 2) { %>
                                             <option value="<%= user.nombre_apellido %> -- <%= user.edificio %> -- <%= user.apartamento %>"><%= user.nombre_apellido %> -- <%= user.edificio %> -- <%= user.apartamento %></option>
@@ -120,8 +121,9 @@
                                 </select>
                                 <label><i class="fas fa-money-bill-wave"></i> Pagos Resividos</label>
                                 <select name="pago" id="pago">
+                                    <option value="">Seleccione un pago</option>
                                     <% results.forEach(function(pago) { %>
-                                        <option value="<%= pago.nombre_p %> -- <%= pago.monto_pago %>Bs"> <%= pago.nombre_p %> -- <%= pago.monto_pago %>Bs</option>
+                                        <option value="<%= pago.nombre_p %> -- <%= pago.monto_pago %>Bs"> <%= pago.nombre_p %> -- <%= pago.monto_pago %>Bs -- <%= pago.fecha_pago ? new Date(pago.fecha_pago).toLocaleDateString('es-ES') : '' %></option>
                                     <% }); %>
                                 </select>
                                 <label><i class="fas fa-calendar-alt"></i> Mes cancelado</label>
@@ -144,7 +146,7 @@
                                 <input type="date" name="fecha_inicio" id="fecha_inicio">
                                 <input type="date" name="fecha_final" id="fecha_final">
                                 <label><i class="fas fa-check"></i> Confirmar Pago</label>
-                                <input type="checkbox" name="confirmar" id="confirmar">
+                                <input type="checkbox" name="confirmar" id="confirmar" value="1">
                                 <button type="submit">Agrgar pago del cliente</button>
                             </form>
                         </div>
@@ -154,27 +156,133 @@
                     <section class="additional-stats">
                         <div class="stat-widget">
                             <h3 style="margin-bottom: 15px; color: #333;">Pagos Confirmados</h3>
-                            <form action="" method="post">
-                                <table>
-                                    <thead>
+                            <div class="busqueda">
+                                <select name="busqueda" id="busqueda">
+                                    <option value="">Selecione un mes</option>
+                                    <option value="Enero">Enero</option>
+                                    <option value="Febrero">Febrero</option>
+                                    <option value="Marzo">Marzo</option>
+                                    <option value="Abril">Abril</option>
+                                    <option value="Mayo">Mayo</option>
+                                    <option value="Junio">Junio</option>
+                                    <option value="Julio">Julio</option>
+                                    <option value="Agosto">Agosto</option>
+                                    <option value="Septiembre">Septiembre</option>
+                                    <option value="Octubre">Octubre</option>
+                                    <option value="Noviembre">Noviembre</option>
+                                    <option value="Diciembre">Diciembre</option>
+                                </select>
+                            </div>
+                            <table>
+                                <thead>
+                                    <tr>
+                                        <th></th>
+                                        <th>Residente</th>
+                                        <th>Monto</th>
+                                        <th>Mes Cancelado</th>
+                                        <th>Fecha final</th>
+                                        <th>Pago confirmado</th>
+                                        <th>Acción</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <% if(estan.length > 0){ %>
+                                        <% estan.forEach((pago)=>{  %>
                                         <tr>
-                                            <th>Residente</th>
-                                            <th>Monto</th>
-                                            <th>Pago confirmado</th>
+                                            <td><%= pago.nombre_cedula %></td>
+                                            <td><%= pago.nombre_monto %></td>
+                                            <td><%= pago.mes %></td>
+                                            <td><%= pago.fecha_fin ? new Date(pago.fecha_fin).toLocaleDateString('es-ES') : 'N/A' %></td>
+                                            <td><%= pago.confirmado === 1 ? "Confirmado" : "Pendiente" %></td>
+                                            <td>
+                                                <button class="delete-btn" onclick="eliminarEstadistica('<%= pago.id_mesualidad %>')">
+                                                    <i class="fas fa-trash"></i> Eliminar
+                                                </button>
+                                            </td>
                                         </tr>
-                                    </thead>
-                                    <tbody></tbody>
-                                </table>
-                            </form>
+                                        <% }); %>
+                                    <% } else { %>
+                                        <tr>
+                                            <td colspan="6">No hay pagos registrados.</td>
+                                        </tr>
+                                    <% } %>
+                                </tbody>
+                            </table>
                         </div>
                     </section>
             </main>
             
             <footer class="footer">
-                <p>&copy; 2023 Panel de Administración. Todos los derechos reservados.</p>
+                <p>&copy; <%= new Date().getFullYear() %> Panel de Administración. Todos los derechos reservados.</p>
             </footer>
         </div>
     </div>
     <script src="../js/script.js"></script>
+    <script src="../js/estadisticas.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11/dist/sweetalert2.all.min.js"></script>
+    <script>
+        async function eliminarEstadistica(id_mesualidad) {
+            const { isConfirmed } = await Swal.fire({
+                title: '¿Eliminar la estadística del pago?',
+                text: "¡Esta acción no se puede revertir!",
+                icon: 'warning',
+                showCancelButton: true,
+                confirmButtonColor: '#3085d6',
+                cancelButtonColor: '#d33',
+                confirmButtonText: 'Confirmar',
+            });
+            if (!isConfirmed) return;
+            try {
+                const response = await fetch(`/deleEstadisticas/${id_mesualidad}`, {
+                    method: 'DELETE',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    }
+                });
+                
+                const data = await response.json();
+                if (!response.ok) {
+                    throw new Error(data.error || 'Error al eliminar la estadística');
+                }
+                await Swal.fire(
+                    '¡Eliminado!',
+                    'La estadística del pago ha sido eliminada.',
+                    'success'
+                );
+                window.location.reload();
+            } catch (error) {
+                Swal.fire(
+                    'Error',
+                    error.message || 'No se pudo eliminar la estadística del pago.',
+                    'error'
+                );
+                console.error('Error:', error);
+            }
+        }
+    </script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            const selectorMes = document.getElementById('busqueda');
+            const filasTabla = document.querySelectorAll('.additional-stats table tbody tr');
+
+            selectorMes.addEventListener('change', function () {
+                const mesSeleccionado = this.value.toLowerCase();
+
+                filasTabla.forEach(fila => {
+                    const celdaMes = fila.children[2]; // La tercera columna es "Mes Cancelado"
+                    if (!celdaMes) return;
+
+                    const mesCelda = celdaMes.textContent.toLowerCase();
+
+                    // Si está vacío, mostrar todas
+                    if (!mesSeleccionado || mesCelda.includes(mesSeleccionado)) {
+                        fila.style.display = '';
+                    } else {
+                        fila.style.display = 'none';
+                    }
+                });
+            });
+        });
+    </script>
 </body>
 </html>

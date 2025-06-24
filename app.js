@@ -41,11 +41,13 @@ app.use(require('./routes/regUsuario'));
 app.use(require('./routes/regUsuario_admin'));
 app.use(require('./routes/aggPagos'));
 app.use(require('./routes/aggProve'));
+app.use(require('./routes/aggEstadisticas'));
 
 //ELIMINACIONES
 app.use(require('./routes/delete_user'));
 app.use(require('./routes/delete_pago'));
 app.use(require('./routes/dele_prove'));
+app.use(require('./routes/deleEstadisticas'));
 
 //RUTAS USUARIOS
 app.use(require('./routes/users'));

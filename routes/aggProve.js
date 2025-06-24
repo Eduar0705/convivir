@@ -3,7 +3,6 @@ const router = express.Router();
 const conexion = require('../config/conexion'); 
 
 router.post('/aggProve', (req, res) => { 
-    let mensaje;
     const { 
         nombre_apellido, cedula, email, rif, 
         telefono, monto_pago, area_trabajo, 

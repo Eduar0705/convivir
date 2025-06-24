@@ -11,7 +11,7 @@ const conexion = conectar.createConnection({
 //Conexion Local
 const conexion1 = conectar.createConnection({
     host: "localhost",
-    database: "convivir",
+    database: "convivir_bd",
     user: "root",
     password: ""
 });

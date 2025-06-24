@@ -17,12 +17,18 @@ router.get('/admin/estadisticas', function(req, res) {
                 console.error(err);
                 return res.status(500).send('Error al cargar los usuarios');
             }
-            
-            // Renderizar la vista con ambos conjuntos de datos
-            res.render('admin/estadisticas', {
-                link: link,
-                results: pagos,
-                usuarios: usuarios 
+            conexion.query('SELECT * FROM pagosMesualidad',(err, estan)=>{
+                if(err){
+                    console.log(err)
+                    return res.status(500).send('Error en la cargaa de Estadisticas');
+                }
+                // Renderizar la vista con ambos conjuntos de datos
+                res.render('admin/estadisticas', {
+                    link: link,
+                    results: pagos,
+                    usuarios: usuarios ,
+                    estan: estan
+                });
             });
         });
     });
